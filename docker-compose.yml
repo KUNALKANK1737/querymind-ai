@@ -1,0 +1,16 @@
+services:
+  postgres:
+    image: postgres:16
+    container_name: querymind-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: querymind
+      POSTGRES_USER: querymind
+      POSTGRES_PASSWORD: querymind_dev
+    ports:
+      - "5432:5432"
+    volumes:
+      - querymind_postgres_data:/var/lib/postgresql/data
+
+volumes:
+  querymind_postgres_data:

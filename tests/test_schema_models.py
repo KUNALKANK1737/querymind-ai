@@ -1,7 +1,6 @@
 from app.schema.models import (
     ColumnSchema,
     DatabaseSchema,
-    ForeignKeySchema,
     TableSchema,
 )
 
