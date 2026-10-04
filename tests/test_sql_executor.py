@@ -1,7 +1,7 @@
+import pytest
+
 from app.db.session import get_database_engine
 from app.sql.executor import execute_sql
-
-
 def test_execute_sql():
     engine = get_database_engine()
 
@@ -30,3 +30,12 @@ def test_execute_analytics_query():
     assert len(result) > 0
     assert "state" in result[0]
     assert "customer_count" in result[0]
+def test_query_timeout():
+    engine = get_database_engine()
+
+    with pytest.raises(Exception):
+        execute_sql(
+            engine,
+            "SELECT pg_sleep(2)",
+            timeout_ms=100,
+        )
