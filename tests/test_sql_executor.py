@@ -1,7 +1,10 @@
 import pytest
+from sqlalchemy.exc import DBAPIError
 
 from app.db.session import get_database_engine
 from app.sql.executor import execute_sql
+
+
 def test_execute_sql():
     engine = get_database_engine()
 
@@ -33,7 +36,7 @@ def test_execute_analytics_query():
 def test_query_timeout():
     engine = get_database_engine()
 
-    with pytest.raises(Exception):
+    with pytest.raises(DBAPIError):
         execute_sql(
             engine,
             "SELECT pg_sleep(2)",

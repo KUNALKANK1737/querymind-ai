@@ -9,3 +9,6 @@ class QueryResponse(BaseModel):
     question: str
     sql: str
     results: list[dict]
+class ErrorResponse(BaseModel):
+    error: str
+    detail: str
