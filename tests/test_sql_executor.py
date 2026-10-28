@@ -17,6 +17,8 @@ def test_execute_sql():
     )
 
     assert result == [{"customer_count": 100}]
+
+
 def test_execute_analytics_query():
     engine = get_database_engine()
 
@@ -33,6 +35,8 @@ def test_execute_analytics_query():
     assert len(result) > 0
     assert "state" in result[0]
     assert "customer_count" in result[0]
+
+
 def test_query_timeout():
     engine = get_database_engine()
 

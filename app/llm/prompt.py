@@ -54,3 +54,62 @@ User question:
 
 def table_column_nullable(column) -> bool:
     return column.nullable
+def build_sql_correction_prompt(
+    question: str,
+    failed_sql: str,
+    error: str,
+    schema: DatabaseSchema,
+) -> str:
+    schema_lines = []
+
+    for table in schema.tables:
+        schema_lines.append(f"Table: {table.name}")
+
+        for column in table.columns:
+            nullable = "NULL" if table_column_nullable(column) else "NOT NULL"
+            schema_lines.append(
+                f"  - {column.name}: {column.data_type} ({nullable})"
+            )
+
+        if table.primary_keys:
+            schema_lines.append(
+                f"  Primary key: {', '.join(table.primary_keys)}"
+            )
+
+        for foreign_key in table.foreign_keys:
+            schema_lines.append(
+                "  Foreign key: "
+                f"{foreign_key.column} -> "
+                f"{foreign_key.referenced_table}."
+                f"{foreign_key.referenced_column}"
+            )
+
+    schema_text = "\n".join(schema_lines)
+
+    return f"""
+You are a PostgreSQL SQL correction assistant.
+
+The user's question is:
+{question}
+
+Database schema:
+{schema_text}
+
+The previously generated SQL was:
+{failed_sql}
+
+The database returned this error:
+{error}
+
+Correct the SQL so that it answers the user's original question
+and works with the provided PostgreSQL schema.
+
+Rules:
+1. Generate only one SELECT statement.
+2. Do not generate INSERT, UPDATE, DELETE, DROP, ALTER, TRUNCATE,
+   CREATE, or other data-modifying statements.
+3. Use only tables and columns present in the provided schema.
+4. Use PostgreSQL syntax.
+5. Return only the corrected SQL query without markdown fences
+   or explanations.
+""".strip()

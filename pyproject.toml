@@ -29,3 +29,10 @@ dev = [
 [tool.setuptools.packages.find]
 include = ["app*"]
 exclude = ["tests*", "scripts*", "data*", "docker*"]
+
+[tool.ruff]
+line-length = 88
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "SIM"]
+ignore = ["SIM117"]
